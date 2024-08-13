@@ -1,0 +1,334 @@
+<head>
+
+</head>
+
+
+
+<div class="custom-video-player">
+  <video
+    class="js-video-plays-in-view"
+    preload="auto"
+    width="640"
+    height="264"
+    muted
+    loop
+  >
+    <source
+      src="https://shrimptonagency.s3.amazonaws.com/WILLY-CHAVARRIA/WILLY-CHAVARRIA-HERO-0001.mp4"
+      type="video/mp4"
+    />
+  </video>
+
+  <div class="custom-video-player__controls">
+
+    <button class="custom-video-player__playPauseBtn paused">
+      <span class="custom-video-player__playPauseBtn--play">
+        <span>play</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M21 12l-18 12v-24z"
+            fill="white"
+          />
+        </svg>
+      </span>
+      <span class="custom-video-player__playPauseBtn--pause">
+        Pause
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M11 22h-4v-20h4v20zm6-20h-4v20h4v-20z"" fill="
+            white"
+          />
+        </svg>
+      </span>
+    </button>
+
+    <input
+      class="custom-video-player__progressBar"
+      type="range"
+      value="0"
+      max="100"
+    />
+    <span class="custom-video-player__currentTime">0:00</span>
+    <button class="custom-video-player__muteBtn">Mute</button>
+    <input
+      class="custom-video-player__volumeBar"
+      type="range"
+      min="0"
+      max="1"
+      step="0.1"
+      value="1"
+    />
+    <button class="custom-video-player__fullscreenBtn">Fullscreen</button>
+  </div>
+</div>
+<!-- 
+<div class="custom-video-player">
+  <video
+    class="js-video-plays-in-view"
+    preload="auto"
+    width="640"
+    height="264"
+  >
+    <source
+      src="PROJECT_DESTINY_WEBSITE_GIF_LOOP_v1_20240805-mobile.mp4"
+      type="video/mp4"
+    />
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="controls">
+    <button class="playPauseBtn">Pause</button>
+    <input
+      class="progressBar"
+      type="range"
+      value="0"
+      max="100"
+    />
+    <span class="currentTime">0:00</span>
+    <button class="muteBtn">Mute</button>
+    <input
+      class="volumeBar"
+      type="range"
+      min="0"
+      max="1"
+      step="0.1"
+      value="1"
+    />
+    <button class="fullscreenBtn">Fullscreen</button>
+  </div>
+</div> -->
+
+
+<!-- <div class="custom-video-player">
+  <video
+    class="js-video-plays-in-view"
+    id="videoPlayer"
+    preload="auto"
+    width="640"
+    height="264"
+  >
+    <source
+      src=""
+      type="video/mp4"
+    />
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="controls">
+    <button id="playPauseBtn">Play</button>
+    <input
+      id="progressBar"
+      type="range"
+      value="0"
+      max="100"
+    />
+    <span id="currentTime">0:00</span>
+    <button id="muteBtn">Un-Mute</button>
+    <input
+      id="volumeBar"
+      type="range"
+      min="0"
+      max="1"
+      step="0.1"
+      value="1"
+    />
+    <button id="fullscreenBtn">Fullscreen</button>
+  </div>
+</div> -->
+
+<style>
+  body {
+    margin: 0;
+    pad: 0;
+  }
+
+  .custom-video-player {
+    font-family: sans-serif;
+    position: relative;
+    /* width: 640px;
+  height: 264px; */
+    background-color: black;
+    color: white;
+    aspect-ratio: 16 / 9;
+  }
+
+  .js-video-plays-in-view {
+    width: 100%;
+    height: 100%;
+  }
+
+  .custom-video-player__controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .custom-video-player__controls button,
+  .custom-video-player__controls input[type="range"] {
+    margin-right: 10px;
+    color: white;
+    background: transparent;
+    border: none;
+  }
+
+  .custom-video-player__progressBar {
+    flex-grow: 1;
+  }
+
+  .custom-video-player__volumeBar {
+    width: 100px;
+  }
+
+  .custom-video-player__currentTime {
+    color: white;
+    margin: 0 5px;
+  }
+
+  .custom-video-player__playPauseBtn.playing .custom-video-player__playPauseBtn--play {
+    display: block;
+  }
+
+  .custom-video-player__playPauseBtn.paused .custom-video-player__playPauseBtn--play {
+    display: none;
+  }
+
+  .custom-video-player__playPauseBtn.playing .custom-video-player__playPauseBtn--pause {
+    display: none;
+  }
+
+  .custom-video-player__playPauseBtn.paused .custom-video-player__playPauseBtn--pause {
+    display: block;
+  }
+</style>
+
+<script>
+  const playPauseVideosInView = () => {
+    const videos = document.querySelectorAll('.js-video-plays-in-view');
+    videos.forEach((video) => {
+      // We can only control playback without insteraction if video is muted
+      video.muted = true;
+      // Play is a promise so we need to check we have it
+      let playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.then((_) => {
+          let observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.intersectionRatio <= 0.1 && !video.paused) {
+                  video.pause();
+                  // console.log("video pause");
+                } else if (video.paused) {
+                  // set to half a second so that if it goes out of view again doesnt hammer the bandwidth
+                  setTimeout(function () {
+                    video.play();
+                  }, 500);
+                }
+              });
+            },
+            { threshold: 0.1 },
+          );
+
+          observer.observe(video);
+        });
+      }
+    });
+  };
+
+
+  function initCustomVideoSkin() {
+    const videoPlayers = document.querySelectorAll(".custom-video-player");
+
+    videoPlayers.forEach(player => {
+      const video = player.querySelector(".js-video-plays-in-view");
+      const playPauseBtn = player.querySelector(".custom-video-player__playPauseBtn");
+      const progressBar = player.querySelector(".custom-video-player__progressBar");
+      const muteBtn = player.querySelector(".custom-video-player__muteBtn");
+      const volumeBar = player.querySelector(".custom-video-player__volumeBar");
+      const fullscreenBtn = player.querySelector(".custom-video-player__fullscreenBtn");
+      const currentTimeDisplay = player.querySelector(".custom-video-player__currentTime");
+
+      // Play/Pause button
+      playPauseBtn.addEventListener("click", function () {
+        if (video.paused) {
+          video.play();
+
+          playPauseBtn.classList.remove('paused')
+          playPauseBtn.classList.add('paused')
+        } else {
+          video.pause();
+          playPauseBtn.classList.remove('paused')
+          playPauseBtn.classList.add('playing')
+        }
+      });
+
+      // Update progress bar and current time display as the video plays
+      video.addEventListener("timeupdate", function () {
+        const progress = (video.currentTime / video.duration) * 100;
+        progressBar.value = progress;
+        currentTimeDisplay.textContent = formatTime(video.currentTime);
+      });
+
+      // Seek video when progress bar is changed
+      progressBar.addEventListener("input", function () {
+        const seekTime = (progressBar.value / 100) * video.duration;
+        video.currentTime = seekTime;
+      });
+
+      // Mute/Unmute button
+      muteBtn.addEventListener("click", function () {
+        video.muted = !video.muted;
+        muteBtn.textContent = video.muted ? "Unmute" : "Mute";
+      });
+
+      // Volume control
+      volumeBar.addEventListener("input", function () {
+        video.volume = volumeBar.value;
+      });
+
+      // Fullscreen button
+      fullscreenBtn.addEventListener("click", function () {
+        if (video.requestFullscreen) {
+          video.requestFullscreen();
+        } else if (video.mozRequestFullScreen) {
+          video.mozRequestFullScreen();
+        } else if (video.webkitRequestFullscreen) {
+          video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) {
+          video.msRequestFullscreen();
+        }
+      });
+
+      // Format time (seconds to mm:ss)
+      function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+      }
+
+      // Set initial current time display
+      video.addEventListener("loadedmetadata", function () {
+        currentTimeDisplay.textContent = formatTime(video.duration);
+      });
+    });
+  }
+
+  playPauseVideosInView()
+  initCustomVideoSkin()
+</script>
+</body>
