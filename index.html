@@ -23,21 +23,20 @@
 
     <button class="custom-video-player__playPauseBtn paused">
       <span class="custom-video-player__playPauseBtn--play">
-        <span>play</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M21 12l-18 12v-24z"
-            fill="white"
-          />
+        <span class="sr-only">play</span>
+        <svg width="27" height="24" viewBox="0 0 27 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_227_410)">
+        <path d="M6.16516 23.6769C4.45178 24.5909 2.25916 23.4939 2.25916 21.7099L2.25916 2.29591C2.25916 0.511914 4.45179 -0.585086 6.16516 0.328914L24.3677 10.0379C26.036 10.9289 26.0327 13.0789 24.3677 13.9679L6.16516 23.6769Z" fill="white"/>
+        </g>
+        <defs>
+        <clipPath id="clip0_227_410">
+        <rect width="24" height="27" fill="white" transform="translate(27) rotate(90)"/>
+        </clipPath>
+        </defs>
         </svg>
       </span>
       <span class="custom-video-player__playPauseBtn--pause">
-        Pause
+        <span class="sr-only">Pause</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -51,13 +50,18 @@
         </svg>
       </span>
     </button>
-
-    <input
+    <progress
       class="custom-video-player__progressBar"
-      type="range"
+      type="pro"
       value="0"
       max="100"
-    />
+    ></progress>
+    <!-- <input
+      class="custom-video-player__progressBar"
+      type="pro"
+      value="0"
+      max="100"
+    /> -->
     <span class="custom-video-player__currentTime">0:00</span>
     <button class="custom-video-player__muteBtn">Mute</button>
     <input
@@ -151,15 +155,20 @@
     margin: 0;
     pad: 0;
   }
+  .sr-only {
+    display: none;
+  }
 
   .custom-video-player {
     font-family: sans-serif;
     position: relative;
     /* width: 640px;
-  height: 264px; */
+    height: 264px; */
     background-color: black;
     color: white;
     aspect-ratio: 16 / 9;
+    font-size: 13px;
+    font-family: monospace;
   }
 
   .js-video-plays-in-view {
@@ -172,24 +181,79 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.7);
+    /* background: rgba(0, 0, 0, 0.7); */
     display: flex;
     align-items: center;
     padding: 10px;
     box-sizing: border-box;
   }
 
-  .custom-video-player__controls button,
-  .custom-video-player__controls input[type="range"] {
+  .custom-video-player__controls button {
     margin-right: 10px;
     color: white;
     background: transparent;
     border: none;
+    border: solid 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
   }
 
+  .custom-video-player__fullscreenBtn,
+  .custom-video-player__muteBtn {
+    /* Hide for Sir */
+    display: none !important;
+  }
   .custom-video-player__progressBar {
     flex-grow: 1;
+    height: 3px;
+    background-color: #979797;
+    overflow: hidden;
+    border-radius: 999px;
   }
+
+  .custom-video-player__progressBar::-webkit-progress-bar {
+    height: 3px;
+    background-color: #979797;
+  }
+
+  .custom-video-player__progressBar::-webkit-progress-value {
+    background-color: white;
+    border-radius: 0;
+    border-radius: 999px;
+  }
+
+
+  /* /volumnes */
+  .custom-video-player__volumeBar {
+    height: 15px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    overflow: hidden;
+  }
+
+  .custom-video-player__volumeBar::-webkit-slider-runnable-track {
+    background-color: #979797;
+    height: 3px;
+    border-radius: 999px;
+  }
+
+  .custom-video-player__volumeBar::-webkit-slider-thumb {
+    background-color: white;
+    appearance: none;
+    display: block;
+    height: 8px;
+    width: 8px;
+    border-radius: 999px;
+    position: relative;
+    top: -2px;
+    /* box-shadow: -407px 0 0 400px #fff; */
+  }
+
+
+
 
   .custom-video-player__volumeBar {
     width: 100px;
@@ -197,9 +261,13 @@
 
   .custom-video-player__currentTime {
     color: white;
-    margin: 0 5px;
+    margin: 0 2rem 0 1rem;
   }
 
+  .custom-video-player__playPauseBtn svg {
+    height: 18px;
+    width: auto;
+  }
   .custom-video-player__playPauseBtn.playing .custom-video-player__playPauseBtn--play {
     display: block;
   }
@@ -267,7 +335,6 @@
       playPauseBtn.addEventListener("click", function () {
         if (video.paused) {
           video.play();
-
           playPauseBtn.classList.remove('paused')
           playPauseBtn.classList.add('paused')
         } else {
