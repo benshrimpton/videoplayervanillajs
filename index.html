@@ -57,92 +57,19 @@
     /> -->
     <span class="custom-video-player__currentTime">0:00</span>
     <button class="custom-video-player__muteBtn">Mute</button>
-    <input
-      class="custom-video-player__volumeBar"
-      type="range"
-      min="0"
-      max="1"
-      step="0.1"
-      value="0"
-    />
+    <div class="custom-video-player__volumeBar-wrap">
+      <input
+        class="custom-video-player__volumeBar"
+        type="range"
+        min="0"
+        max="1"
+        step="0.1"
+        value="0"
+      />
+    </div>
     <button class="custom-video-player__fullscreenBtn">Fullscreen</button>
   </div>
 </div>
-<!-- 
-<div class="custom-video-player">
-  <video
-    class="js-video-plays-in-view"
-    preload="auto"
-    width="640"
-    height="264"
-  >
-    <source
-      src="PROJECT_DESTINY_WEBSITE_GIF_LOOP_v1_20240805-mobile.mp4"
-      type="video/mp4"
-    />
-    Your browser does not support the video tag.
-  </video>
-
-  <div class="controls">
-    <button class="playPauseBtn">Pause</button>
-    <input
-      class="progressBar"
-      type="range"
-      value="0"
-      max="100"
-    />
-    <span class="currentTime">0:00</span>
-    <button class="muteBtn">Mute</button>
-    <input
-      class="volumeBar"
-      type="range"
-      min="0"
-      max="1"
-      step="0.1"
-      value="1"
-    />
-    <button class="fullscreenBtn">Fullscreen</button>
-  </div>
-</div> -->
-
-
-<!-- <div class="custom-video-player">
-  <video
-    class="js-video-plays-in-view"
-    id="videoPlayer"
-    preload="auto"
-    width="640"
-    height="264"
-  >
-    <source
-      src=""
-      type="video/mp4"
-    />
-    Your browser does not support the video tag.
-  </video>
-
-  <div class="controls">
-    <button id="playPauseBtn">Play</button>
-    <input
-      id="progressBar"
-      type="range"
-      value="0"
-      max="100"
-    />
-    <span id="currentTime">0:00</span>
-    <button id="muteBtn">Un-Mute</button>
-    <input
-      id="volumeBar"
-      type="range"
-      min="0"
-      max="1"
-      step="0.1"
-      value="1"
-    />
-    <button id="fullscreenBtn">Fullscreen</button>
-  </div>
-</div> -->
-
 <style>
   body {
     margin: 0;
@@ -162,7 +89,9 @@
     aspect-ratio: 16 / 9;
     font-size: 13px;
     font-family: monospace;
+
   }
+
   @media (max-width: 640px) {
     .custom-video-player {
       aspect-ratio: 9 / 16;
@@ -184,7 +113,12 @@
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
+    opacity: 0;
+    transition: opacity ease .3s;
   }
+  .custom-video-player:hover .custom-video-player__controls {
+    opacity: 1;
+  }  
 
   .custom-video-player__controls button {
     margin-right: 10px;
@@ -225,12 +159,16 @@
 
 
   /* /volumnes */
+    .custom-video-player__volumeBar-wrap {
+      position: relative;
+    }
   .custom-video-player__volumeBar {
     height: 15px;
     -webkit-appearance: none;
     appearance: none;
     background-color: transparent;
     overflow: hidden;
+    margin: 0;
   }
 
   .custom-video-player__volumeBar::-webkit-slider-runnable-track {
@@ -279,6 +217,19 @@
   .custom-video-player__playPauseBtn.paused .custom-video-player__playPauseBtn--pause {
     display: block;
   }
+  .range__input-fill {
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    height: 10px;
+    background-color: white;
+    display: block;
+    height: 3px;
+    top:35%;
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+    transition: translateY(-50%);
+  }
 </style>
 
 <script>
@@ -316,6 +267,8 @@
 
 
   function initCustomVideoSkin() {
+
+
     const videoPlayers = document.querySelectorAll(".custom-video-player");
 
     videoPlayers.forEach(player => {
@@ -323,9 +276,20 @@
       const playPauseBtn = player.querySelector(".custom-video-player__playPauseBtn");
       const progressBar = player.querySelector(".custom-video-player__progressBar");
       const muteBtn = player.querySelector(".custom-video-player__muteBtn");
+      const volumeBarWrap = player.querySelector(".custom-video-player__volumeBar-wrap");
       const volumeBar = player.querySelector(".custom-video-player__volumeBar");
+      
       const fullscreenBtn = player.querySelector(".custom-video-player__fullscreenBtn");
       const currentTimeDisplay = player.querySelector(".custom-video-player__currentTime");
+
+
+      // range fill, place the <input> and fill inside container <span>
+      let rangeFill = document.createElement("span");
+      rangeFill.className = "range__input-fill";
+      // volumeBar.appendChild(this.el);
+      volumeBarWrap.appendChild(rangeFill);
+      // this.fill = rangeFill;
+
 
       // Play/Pause button
       playPauseBtn.addEventListener("click", function () {
@@ -362,6 +326,7 @@
       // Volume control
       volumeBar.addEventListener("input", function () {
         console.log(volumeBar.value)
+        rangeFill.style.width = volumeBar.value * 100 + '%'
         if(volumeBar.value > 0) {
           console.log("greater")
           video.muted = false
