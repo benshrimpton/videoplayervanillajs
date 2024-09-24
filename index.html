@@ -5,18 +5,12 @@
 
 
 <div class="custom-video-player">
-  <video
-    class="js-video-plays-in-view"
-    preload="auto"
-    width="640"
-    height="264"
-    muted
+  
+  <video  
     loop
-  >
-    <source
-      src="https://shrimptonagency.s3.amazonaws.com/WILLY-CHAVARRIA/WILLY-CHAVARRIA-HERO-0001.mp4"
-      type="video/mp4"
-    />
+    src="https://www.sirdavis.com/sites/default/files/2024-09/SIRDAVIS_BRAND_EDIT_20240828_MC_FINAL_16x9_H264_Website.mp4"
+    style="width: 100%;"
+    class="js-video-plays-in-view">
   </video>
 
   <div class="custom-video-player__controls">
@@ -70,7 +64,7 @@
       min="0"
       max="1"
       step="0.1"
-      value="1"
+      value="0"
     />
     <button class="custom-video-player__fullscreenBtn">Fullscreen</button>
   </div>
@@ -184,7 +178,7 @@
     /* background: rgba(0, 0, 0, 0.7); */
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
   }
 
@@ -193,14 +187,15 @@
     color: white;
     background: transparent;
     border: none;
-    border: solid 1px;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 30px;
   }
 
-  .custom-video-player__fullscreenBtn,
+  .custom-video-player__fullscreenBtn {
+    display: none !important;
+  }
   .custom-video-player__muteBtn {
     /* Hide for Sir */
     display: none !important;
@@ -251,9 +246,6 @@
     top: -2px;
     /* box-shadow: -407px 0 0 400px #fff; */
   }
-
-
-
 
   .custom-video-player__volumeBar {
     width: 100px;
@@ -323,7 +315,7 @@
     const videoPlayers = document.querySelectorAll(".custom-video-player");
 
     videoPlayers.forEach(player => {
-      const video = player.querySelector(".js-video-plays-in-view");
+      const video = player.querySelector("video");
       const playPauseBtn = player.querySelector(".custom-video-player__playPauseBtn");
       const progressBar = player.querySelector(".custom-video-player__progressBar");
       const muteBtn = player.querySelector(".custom-video-player__muteBtn");
@@ -365,6 +357,15 @@
 
       // Volume control
       volumeBar.addEventListener("input", function () {
+        console.log(volumeBar.value)
+        if(volumeBar.value > 0) {
+          console.log("greater")
+          video.muted = false
+        }
+        else {
+          console.log("less")
+          video.muted = true
+        }
         video.volume = volumeBar.value;
       });
 

@@ -1,0 +1,168 @@
+<div class="custom-video-player">
+  <video
+    id="videoPlayer"
+    class="video js-video-plays-in-view"
+    src="https://www.sirdavis.com/sites/default/files/2024-09/SIRDAVIS_BRAND_EDIT_20240828_MC_FINAL_16x9_H264_Website.mp4"
+    muted
+  ></video>
+  <div class="controls">
+    <button
+      id="playPauseBtn"
+      class="play-pause-btn"
+    >Play</button>
+    <input
+      id="seekBar"
+      class="seek-bar"
+      type="range"
+      value="0"
+    >
+    <button
+      id="muteBtn"
+      class="mute-btn"
+    >Mute</button>
+    <input
+      id="volumeBar"
+      class="volume-bar"
+      type="range"
+      min="0"
+      max="1"
+      step="0.1"
+      value="1"
+    >
+  </div>
+</div>
+
+<style>
+  .custom-video-player {
+  position: relative;
+  max-width: 800px;
+  margin: auto;
+}
+
+.video {
+  width: 100%;
+  height: auto;
+}
+
+.controls {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+
+.play-pause-btn,
+.mute-btn {
+  background-color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.play-pause-btn:hover,
+.mute-btn:hover {
+  background-color: #ddd;
+}
+
+.seek-bar,
+.volume-bar {
+  flex-grow: 1;
+  margin: 0 10px;
+}
+
+.seek-bar {
+  width: 60%;
+}
+
+.volume-bar {
+  width: 100px;
+}
+
+</style>
+<script>
+
+  const playPauseVideosInView = () => {
+    const videos = document.querySelectorAll('.js-video-plays-in-view');
+    videos.forEach((video) => {
+      // We can only control playback without insteraction if video is muted
+      video.muted = true;
+      // Play is a promise so we need to check we have it
+      let playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.then((_) => {
+          let observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.intersectionRatio <= 0.1 && !video.paused) {
+                  video.pause();
+                  // console.log("video pause");
+                } else if (video.paused) {
+                  // set to half a second so that if it goes out of view again doesnt hammer the bandwidth
+                  setTimeout(function () {
+                    video.play();
+                  }, 500);
+                }
+              });
+            },
+            { threshold: 0.1 },
+          );
+
+          observer.observe(video);
+        });
+      }
+    });
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+      const video = document.getElementById('videoPlayer');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const muteBtn = document.getElementById('muteBtn');
+      const seekBar = document.getElementById('seekBar');
+      const volumeBar = document.getElementById('volumeBar');
+
+      // Play/Pause functionality
+      playPauseBtn.addEventListener('click', function () {
+        if (video.paused) {
+          video.play();
+          playPauseBtn.textContent = 'Pause';
+        } else {
+          video.pause();
+          playPauseBtn.textContent = 'Play';
+        }
+      });
+
+      // Update seek bar as the video plays
+      video.addEventListener('timeupdate', function () {
+        const value = (100 / video.duration) * video.currentTime;
+        seekBar.value = value;
+      });
+
+      // Seek functionality
+      seekBar.addEventListener('input', function () {
+        const time = (video.duration / 100) * seekBar.value;
+        video.currentTime = time;
+      });
+
+      // Mute/Unmute functionality
+      muteBtn.addEventListener('click', function () {
+        if (video.muted) {
+          video.muted = false;
+          muteBtn.textContent = 'Mute';
+        } else {
+          video.muted = true;
+          muteBtn.textContent = 'Unmute';
+        }
+      });
+
+      // Volume control
+      volumeBar.addEventListener('input', function () {
+        video.volume = volumeBar.value;
+      });
+    });
+
+</script>
